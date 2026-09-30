@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>周裔 · 随笔空间</title>
+<style>
+  :root{
+    --teal: #0f9b8e;
+    --teal-light: #e4f4f1;
+    --ink: #24393a;
+    --muted: #69827f;
+    --bg: #fbfdfc;
+    --card: #ffffff;
+    --line: #ebf2f0;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{
+    font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    background: var(--bg);
+    background: linear-gradient(180deg, #e6f4f1 0%, #fbfdfc 42%, #f2faf8 100%) fixed;
+    color: var(--ink); line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  main{ max-width: 720px; margin: 0 auto; padding: 0 20px 48px; }
+  .top-wave{ display:block; width:100%; height:80px; }
+
+  /* ===== 悬浮侧边栏（与主页一致） ===== */
+  .side-nav{
+    position:fixed; top:16px; left:16px; z-index:50;
+    display:flex; flex-direction:column; gap:8px;
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding:8px 6px; box-shadow:0 3px 12px rgba(36,57,58,.08);
+  }
+  .nav-btn{
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; text-decoration:none;
+    transition: background .15s;
+  }
+  .nav-btn:hover{ background: var(--teal-light); }
+  .nav-btn.active{ background:#e4f4f1; }
+  .nav-toggle{
+    border:none; background:transparent; cursor:pointer;
+    font-size:13px; color:var(--muted); padding:0;
+    font-family:inherit;
+  }
+  .nav-toggle:hover{ background: var(--teal-light); }
+  .side-nav.collapsed .nav-link{ display:none; }
+
+  /* ===== 左侧资料卡 ===== */
+  .essay-layout{ display:flex; gap:20px; align-items:flex-start; }
+  .profile-card{
+    width:150px; flex-shrink:0; text-align:center;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:16px 12px;
+  }
+  .profile-card .avatar-sm{
+    width:72px; height:72px; border-radius:50%; object-fit:cover;
+    border:2px solid #fff; box-shadow:0 2px 10px rgba(36,57,58,.10);
+  }
+  .profile-name{ margin-top:8px; font-size:15px; letter-spacing:1px; color:var(--ink); }
+  .profile-info{
+    margin-top:8px; font-size:12.5px; color:var(--muted);
+    display:flex; flex-direction:column; gap:3px; align-items:center;
+  }
+  .profile-info a{ color:var(--muted); text-decoration:none; }
+  .profile-info > div{ word-break:break-all; }
+  .tip-tags{ display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-top:2px; }
+  .tag{
+    font-size:11px; color:var(--muted); background:#e4f4f1;
+    border-radius:999px; padding:3px 9px; white-space:nowrap;
+  }
+  @media (max-width: 599px){
+    .essay-layout{ flex-direction:column; }
+    .profile-card{ width:100%; }
+  }
+
+  /* ===== 页面内容 ===== */
+  .hero{ text-align:center; padding: 16px 0 36px; }
+  .hero h1{ font-size: 24px; letter-spacing: 2px; }
+  .hero p{ margin-top: 6px; color: var(--muted); font-size: 14px; }
+  .essay-list{ display:flex; flex-direction:column; gap:12px; }
+  .essay-card{
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px;
+    font-size: 14px; color: var(--ink);
+  }
+  .essay-date{ font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  footer{
+    margin-top: 40px;
+    display:flex; align-items:center; gap:12px;
+    font-size:12px; color:#c2cfcc;
+  }
+  footer::before, footer::after{
+    content:""; flex:1; border-top:1px solid #e0e5e3;
+  }
+</style>
+</head>
+<body>
+
+<!-- 侧边栏：页面跳转 -->
+<nav class="side-nav" id="sideNav">
+  <a class="nav-btn nav-link" href="index.html" title="回到主页">🏠</a>
+  <a class="nav-btn nav-link active" href="page2.html" title="本页 · 随笔空间">🌸</a>
+  <button class="nav-btn nav-toggle" id="navToggle" title="收起导航">⌃</button>
+</nav>
+
+<!-- 顶部自然曲线装饰 -->
+<svg class="top-wave" viewBox="0 0 720 80" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,0 H720 V26 C580,68 440,18 320,40 C190,64 100,24 0,52 Z" fill="#eef6f4"/>
+</svg>
+
+<main>
+  <header class="hero">
+    <h1>周裔的随笔空间</h1>
+  </header>
+
+  <div class="essay-layout">
+    <aside class="profile-card">
+      <img class="avatar-sm" src="avatar.jpg" alt="周裔的头像">
+      <div class="profile-name">周裔</div>
+      <div class="profile-info">
+        <div>性别：女</div>
+        <div>电话：15821134165</div>
+        <div>邮箱：<a href="mailto:1248536271@qq.com">1248536271@qq.com</a></div>
+        <div class="tip-tags">
+          <span class="tag">🎨 画画</span>
+          <span class="tag">✍️ 写作</span>
+          <span class="tag">🌿 有话直说</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="essay-list">
+    <div class="essay-card">
+      <div class="essay-date">2026-05-22</div>
+      这阵子一直在搭自己的小主页，顺便把课程笔记一条条理顺。原以为整理是重复劳动，后来才发现，能把旧知识讲清楚，才算真的装进了口袋。
+    </div>
+    <div class="essay-card">
+      <div class="essay-date">2026-06-15</div>
+      画画于我像一个暂停键。画到一半常常忘了时间，回过头再看笔记，那些绕来绕去的概念，忽然就有了轮廓和颜色。
+    </div>
+    <div class="essay-card">
+      <div class="essay-date">2026-08-09</div>
+      我喜欢把学到的东西写成大白话。复杂术语被讲成人话的那一刻，就像有人替我把乱掉的线头一根根理好，特别踏实。
+    </div>
+    <div class="essay-card">
+      <div class="essay-date">2026-09-10</div>
+      学 AI 的日子，我总提醒自己别装懂。不懂就承认，再一点点啃明白——说实话虽然慢一点，但心里干净，睡得也香。
+    </div>
+    </div>
+  </div>
+
+  <footer>End</footer>
+</main>
+
+<script>
+  /* 侧边栏收起 / 唤出 */
+  const sideNav = document.getElementById('sideNav');
+  const navToggle = document.getElementById('navToggle');
+  navToggle.addEventListener('click', () => {
+    const collapsed = sideNav.classList.toggle('collapsed');
+    navToggle.textContent = collapsed ? '⌄' : '⌃';
+    navToggle.title = collapsed ? '展开导航' : '收起导航';
+  });
+</script>
+</body>
+</html>
