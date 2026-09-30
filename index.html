@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>周裔 · 个人主页</title>
+<style>
+  :root{
+    --teal: #0f9b8e;
+    --teal-dark: #0b7d72;
+    --teal-light: #e4f4f1;
+    --ink: #24393a;
+    --muted: #69827f;
+    --bg: #fbfdfc;
+    --card: #ffffff;
+    --line: #ebf2f0;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+    background: var(--bg);
+    background: linear-gradient(180deg, #e6f4f1 0%, #fbfdfc 42%, #f2faf8 100%) fixed;
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  main{ max-width: 720px; margin: 0 auto; padding: 0 20px 48px; }
+
+  /* ===== 顶部自然装饰曲线 ===== */
+  .top-wave{ display:block; width:100%; height:80px; }
+
+  /* ===== Hero ===== */
+  .hero{ text-align:center; padding: 8px 0 36px; }
+  .avatar{
+    width: 96px; height: 96px; border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 3px 14px rgba(36,57,58,.10);
+  }
+  .hero h1{
+    margin-top: 16px; font-size: 30px; letter-spacing: 2px;
+  }
+  .hero .intro{ margin-top: 6px; color: var(--muted); font-size: 15px; }
+  .hero-cta{
+    display:inline-block; margin-top: 22px;
+    background: var(--teal); color:#fff; text-decoration:none;
+    font-size: 14px; padding: 10px 26px; border-radius: 999px;
+    box-shadow: 0 3px 12px rgba(15,155,142,.25);
+    transition: background .15s, transform .15s;
+  }
+  .hero-cta:hover{ background: var(--teal-dark); transform: translateY(-1px); }
+
+  /* ===== 信息展示区 ===== */
+  section h2{
+    font-size: 17px; color: var(--ink);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom: 14px;
+  }
+  section h2 .dot{ width:8px; height:8px; border-radius:50%; background: var(--teal); }
+  .about{ margin: 20px 0 40px; }
+  .cards{ display:grid; grid-template-columns: 1fr; gap: 8px; }
+  .card{
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 12px 16px;
+  }
+  .card .icon{ font-size: 18px; }
+  .card-head{ display:flex; align-items:center; gap:8px; }
+  .card h3{ font-size: 14px; color: var(--teal-dark); }
+  .card p{ font-size: 13.5px; margin-top: 3px; color: var(--muted); }
+
+  /* ===== 聊天区 ===== */
+  .chat-wrap{ margin-top: 8px; }
+  .chat-box{
+    background: var(--card); border:1px solid var(--line);
+    border-radius: 16px; overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .chat-head{
+    display:flex; align-items:center; gap:10px;
+    padding: 12px 16px; border-bottom:1px solid var(--line);
+  }
+  .chat-head .status-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:#37c9a0; box-shadow:0 0 0 3px rgba(55,201,160,.18);
+  }
+  .chat-head b{ font-size:14px; }
+  .chat-head span{ font-size:12px; color:var(--muted); }
+
+  .messages{
+    height: 300px; overflow-y:auto; padding: 16px;
+    display:flex; flex-direction:column; gap: 10px;
+    background: #fafcfc;
+  }
+  .msg{ max-width: 82%; padding: 10px 14px; border-radius: 14px; font-size: 14px; }
+  .msg.ai{
+    align-self: flex-start;
+    background: var(--teal-light); color: var(--ink);
+    border-top-left-radius: 4px;
+  }
+  .msg.user{
+    align-self: flex-end;
+    background: var(--teal); color:#fff;
+    border-top-right-radius: 4px;
+  }
+  .msg.typing span{
+    display:inline-block; width:6px; height:6px; margin:0 1px;
+    background: var(--teal); border-radius:50%; opacity:.4;
+    animation: blink 1.2s infinite;
+  }
+  .msg.typing span:nth-child(2){ animation-delay:.2s; }
+  .msg.typing span:nth-child(3){ animation-delay:.4s; }
+  @keyframes blink{ 0%,80%,100%{opacity:.3} 40%{opacity:1} }
+
+  .chips{
+    display:flex; gap:8px; padding: 10px 14px 4px; flex-wrap:wrap;
+    border-top:1px solid var(--line);
+  }
+  .chip{
+    font-size: 12px; color: var(--teal-dark);
+    border:1px solid #cfe5e1; background:#fff;
+    border-radius: 999px; padding: 5px 12px; cursor:pointer;
+    transition: background .15s;
+  }
+  .chip:hover{ background: var(--teal-light); }
+
+  .chat-input{
+    display:flex; gap:8px; padding: 10px 14px 14px;
+  }
+  .chat-input input{
+    flex:1; border:1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; outline:none;
+  }
+  .chat-input input:focus{ border-color: var(--teal); }
+  .chat-input button{
+    border:none; background: var(--teal); color:#fff;
+    border-radius: 10px; padding: 0 18px; font-size: 14px; cursor:pointer;
+  }
+  .chat-input button:hover{ background: var(--teal-dark); }
+
+  footer{
+    margin-top: 40px; text-align:center;
+    font-size: 12px; color: var(--muted);
+  }
+
+  /* ===== 悬浮侧边栏（页面跳转） ===== */
+  .side-nav{
+    position:fixed; top:16px; left:16px; z-index:50;
+    display:flex; flex-direction:column; gap:8px;
+    background:#fff; border:1px solid var(--line); border-radius:999px;
+    padding:8px 6px; box-shadow:0 3px 12px rgba(36,57,58,.08);
+  }
+  .nav-btn{
+    width:34px; height:34px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; text-decoration:none;
+    transition: background .15s;
+  }
+  .nav-btn:hover{ background: var(--teal-light); }
+  .nav-btn.active{ background:#e4f4f1; }
+  .nav-toggle{
+    border:none; background:transparent; cursor:pointer;
+    font-size:13px; color:var(--muted); padding:0;
+    font-family:inherit;
+  }
+  .nav-toggle:hover{ background: var(--teal-light); }
+  .side-nav.collapsed .nav-link{ display:none; }
+
+  /* ===== 手机适配 ===== */
+  @media (min-width: 600px){
+    .messages{ height: 340px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 侧边栏：页面跳转 -->
+<nav class="side-nav" id="sideNav">
+  <a class="nav-btn nav-link active" href="index.html" title="主页">🏠</a>
+  <a class="nav-btn nav-link" href="page2.html" title="随笔空间">🌸</a>
+  <button class="nav-btn nav-toggle" id="navToggle" title="收起导航">⌃</button>
+</nav>
+
+<!-- 顶部自然曲线装饰 -->
+<svg class="top-wave" viewBox="0 0 720 80" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,0 H720 V26 C580,68 440,18 320,40 C190,64 100,24 0,52 Z" fill="#eef6f4"/>
+</svg>
+
+<main>
+  <!-- 头像 + 名字 + 一句话介绍 -->
+  <header class="hero">
+    <img class="avatar" src="avatar.jpg" alt="周的头像">
+    <h1>周裔</h1>
+    <p class="intro">一个平平无奇想要摆烂的大学生</p>
+    <a class="hero-cta" href="#chat">💬 和我的数字分身聊聊</a>
+  </header>
+
+  <!-- 个人信息展示区 -->
+  <section class="about">
+    <h2><span class="dot"></span>关于我</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><span class="icon">🌱</span><h3>最近在做</h3></div>
+        <p>搭这个个人主页，同时把这学期的课程内容整理成自己的笔记。</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="icon">🎨</span><h3>兴趣</h3></div>
+        <p>画画和写作——一个用来观察世界，一个用来理清自己。</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><span class="icon">💡</span><h3>我的特点</h3></div>
+        <p>不迎合、不讨好，做最真实的自己。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 数字分身聊天区 -->
+  <section class="chat-wrap" id="chat">
+    <h2><span class="dot"></span>和我的数字分身聊聊</h2>
+    <div class="chat-box">
+      <div class="chat-head">
+        <span class="status-dot"></span>
+        <b>数字分身 · 周裔</b>
+        <span>基于「我」的资料回答</span>
+      </div>
+      <div class="messages" id="messages"></div>
+      <div class="chips" id="chips">
+        <button class="chip">你最近怎么样？</button>
+        <button class="chip">你在整理什么资料？</button>
+        <button class="chip">对你来说难度如何？</button>
+      </div>
+      <form class="chat-input" id="chatForm">
+        <input type="text" id="input" placeholder="问点什么吧…" autocomplete="off">
+        <button type="submit">发送</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>周裔 · 个人主页</footer>
+</main>
+
+<script>
+  const messages = document.getElementById('messages');
+  const form = document.getElementById('chatForm');
+  const input = document.getElementById('input');
+
+  function addMsg(text, who){
+    const div = document.createElement('div');
+    div.className = 'msg ' + who;
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  /* 打字机效果输出分身回复 */
+  function reply(text){
+    const tip = addMsg('', 'ai typing');
+    tip.innerHTML = '<span></span><span></span><span></span>';
+    setTimeout(() => {
+      tip.className = 'msg ai';
+      tip.textContent = '';
+      let i = 0;
+      const timer = setInterval(() => {
+        tip.textContent += text[i++];
+        messages.scrollTop = messages.scrollHeight;
+        if (i >= text.length) clearInterval(timer);
+      }, 24);
+    }, 650);
+  }
+
+  /* 第一版：本地关键词匹配。之后可替换为真实 AI 接口 */
+  function getReply(text){
+    const t = text.toLowerCase();
+    if (/最近|怎么样|近况|在忙|在干嘛|好吗/.test(t))
+      return "最近状态还不错！😄 主要在忙两件事：搭自己的个人主页（就是你现在的这个页面），还有把课程内容慢慢整理成笔记。节奏不快，但挺踏实的～🌱";
+    if (/整理|资料|笔记|课程/.test(t))
+      return "在整理课堂笔记和学习资料📚 我会把知识点用自己的话重讲一遍，再配上小图示。与其抄一遍，不如讲一遍，记得牢得多 ✨";
+    if (/难度|难|累|吃力|挑战/.test(t))
+      return "说实话，有些内容第一遍看会懵 😵 我的办法是先过一遍，再试着用大白话讲给自己听：能讲明白的就是真懂了，讲不明白的就知道该回头补哪里 💪";
+    if (/ai|人工智能/.test(t))
+      return "AI 对我来说既是学习对象，也是学习工具 🤖 比如这个数字分身，就是我一边学一边搭出来的小实验 ✨";
+    if (/画画|画/.test(t))
+      return "画画是我给自己充电的方式 🎨 有时候也会把课程笔记画成小图，看起来轻松多了～";
+    if (/写作|写东西|文章/.test(t))
+      return "我喜欢把学到的内容写出来 ✍️ ";
+    if (/你好|嗨|hi|hello/.test(t))
+      return "嗨～我是周裔的数字分身 🌿 有什么想问的吗？";
+    /* 兜底：问题不在回答范围内时的通用回答 */
+    return "唔……这个问题好像超出我的回答范围了 我只了解「周裔」的近况、在整理的资料、学习难度，还有画画写作这些事～你可以点下面的快捷问题，或者换个方式问问看 🌿";
+  }
+
+  function send(text){
+    const content = text.trim();
+    if (!content) return;
+    addMsg(content, 'user');
+    input.value = '';
+    reply(getReply(content));
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    send(input.value);
+  });
+
+  document.getElementById('chips').addEventListener('click', e => {
+    if (e.target.classList.contains('chip')) send(e.target.textContent);
+  });
+
+  /* 侧边栏收起 / 唤出 */
+  const sideNav = document.getElementById('sideNav');
+  const navToggle = document.getElementById('navToggle');
+  navToggle.addEventListener('click', () => {
+    const collapsed = sideNav.classList.toggle('collapsed');
+    navToggle.textContent = collapsed ? '⌄' : '⌃';
+    navToggle.title = collapsed ? '展开导航' : '收起导航';
+  });
+
+  /* 欢迎语 */
+  setTimeout(() => {
+    reply("嗨，我是「周裔」的数字分身 🌿 你可以点下面的快捷问题，也可以直接打字问我～");
+  }, 400);
+</script>
+</body>
+</html>
