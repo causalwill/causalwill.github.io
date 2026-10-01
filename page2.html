@@ -114,6 +114,40 @@
   @media (max-width: 599px){
     .photo-grid{ grid-template-columns: repeat(2, 1fr); }
   }
+
+  /* ===== 九宫格拼图（可打乱还原） ===== */
+  .puzzle{
+    margin-top: 14px;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:4px;
+    background:#fff; border:1px solid var(--line); border-radius:12px;
+    padding:4px;
+  }
+  .pz{
+    aspect-ratio: 4/3; border-radius: 6px;
+    background-image:url('blossom.jpg');
+    background-size:300% 300%;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .pz.movable{ box-shadow: 0 0 0 2px rgba(15,155,142,.45); }
+  .pz.movable:hover{ transform: scale(.97); }
+  .pz.empty{
+    background:#eef4f2; cursor:default;
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .puzzle-bar{
+    display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+    margin-top:12px; font-size:13px; color:var(--muted);
+  }
+  .puzzle-btn{
+    border:none; background:var(--teal); color:#fff;
+    border-radius:999px; padding:6px 18px; font-size:13px;
+    cursor:pointer; font-family:inherit;
+    transition: background .15s;
+  }
+  .puzzle-btn:hover{ background:var(--teal-dark); }
+  .win-msg{ color:var(--teal-dark); font-weight:600; }
   footer{
     margin-top: 40px;
     display:flex; align-items:center; gap:12px;
@@ -182,6 +216,14 @@
       <img src="photo2.jpg" alt="晚霞">
       <img src="photo3.jpg" alt="晚霞">
     </div>
+    <h2 class="essay-title section-gap" id="game"><span class="dot"></span>游戏</h2>
+    <div class="puzzle" id="puzzle"></div>
+    <div class="puzzle-bar">
+      <button class="puzzle-btn" id="puzzleShuffle" type="button">打乱开始</button>
+      <span>步数：<b id="puzzleMoves">0</b></span>
+      <span class="win-msg" id="puzzleWin"></span>
+      <span>点击与空格相邻的拼块即可滑动，把画还原</span>
+    </div>
     </div>
   </div>
 
@@ -197,6 +239,71 @@
     navToggle.textContent = collapsed ? '⌄' : '⌃';
     navToggle.title = collapsed ? '展开导航' : '收起导航';
   });
+
+  /* ===== 九宫格拼图 ===== */
+  /* 数据契约：state[格子位置] = 拼块编号(0-8)，编号8为空格；编号决定画面区域 */
+  const puzzleEl = document.getElementById('puzzle');
+  const movesEl = document.getElementById('puzzleMoves');
+  const winEl = document.getElementById('puzzleWin');
+  const POSITIONS = [
+    '0% 0%','50% 0%','100% 0%',
+    '0% 50%','50% 50%','100% 50%',
+    '0% 100%','50% 100%','100% 100%'
+  ];
+  let state = [0,1,2,3,4,5,6,7,8];
+  let moves = 0;
+
+  function isSolved(){ return state.every((p,i) => p === i); }
+  function isAdjacent(a,b){
+    const ra = Math.floor(a/3), ca = a%3, rb = Math.floor(b/3), cb = b%3;
+    return Math.abs(ra-rb) + Math.abs(ca-cb) === 1;
+  }
+
+  function render(){
+    puzzleEl.innerHTML = '';
+    const emptyPos = state.indexOf(8);
+    state.forEach((piece, pos) => {
+      const cell = document.createElement('div');
+      cell.dataset.pos = pos;
+      if (piece === 8){
+        cell.className = 'pz empty';
+      } else {
+        cell.className = 'pz' + (isAdjacent(pos, emptyPos) ? ' movable' : '');
+        cell.style.backgroundPosition = POSITIONS[piece];
+        cell.addEventListener('click', () => tryMove(pos));
+      }
+      puzzleEl.appendChild(cell);
+    });
+    movesEl.textContent = moves;
+    winEl.textContent = (moves > 0 && isSolved()) ? '拼好啦 🌿 杏花盛开了' : '';
+  }
+
+  function tryMove(pos){
+    const emptyPos = state.indexOf(8);
+    if (!isAdjacent(pos, emptyPos)) return;
+    [state[pos], state[emptyPos]] = [state[emptyPos], state[pos]];
+    moves++;
+    render();
+  }
+
+  /* 随机游走打乱：从完成态做一连串合法移动，保证一定能还原 */
+  document.getElementById('puzzleShuffle').addEventListener('click', () => {
+    let emptyPos = 8, lastEmpty = -1;
+    for (let i = 0; i < 80; i++){
+      const candidates = [];
+      for (let p = 0; p < 9; p++){
+        if (p !== lastEmpty && isAdjacent(p, emptyPos)) candidates.push(p);
+      }
+      const pick = candidates[Math.floor(Math.random()*candidates.length)];
+      [state[pick], state[emptyPos]] = [state[emptyPos], state[pick]];
+      lastEmpty = emptyPos;
+      emptyPos = pick;
+    }
+    moves = 0;
+    render();
+  });
+
+  render();
 </script>
 </body>
 </html>
