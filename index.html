@@ -42,6 +42,9 @@
     margin-top: 16px; font-size: 30px; letter-spacing: 2px;
   }
   .hero .intro{ margin-top: 6px; color: var(--muted); font-size: 15px; }
+  .hero-email{ margin-top: 4px; font-size: 13.5px; color: var(--muted); }
+  .hero-email a{ color: var(--teal-dark); text-decoration: none; }
+  .hero-email a:hover{ text-decoration: underline; }
   .hero-cta{
     display:inline-block; margin-top: 22px;
     background: var(--teal); color:#fff; text-decoration:none;
@@ -59,10 +62,26 @@
   }
   section h2 .dot{ width:8px; height:8px; border-radius:50%; background: var(--teal); }
   .about{ margin: 20px 0 40px; }
-  .cards{ display:grid; grid-template-columns: 1fr; gap: 8px; }
+  .cards{
+    display:flex; gap: 8px;
+  }
   .card{
+    flex:1; min-width: 0;
+    display:flex; flex-direction:column;
     background: var(--card); border: 1px solid var(--line);
     border-radius: 14px; padding: 12px 16px;
+  }
+  a.card{
+    color: inherit; text-decoration: none; cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, transform .15s;
+  }
+  a.card:hover{
+    border-color: rgba(15,155,142,.35);
+    box-shadow: 0 6px 18px rgba(15,155,142,.10);
+    transform: translateY(-2px);
+  }
+  @media (max-width: 599px){
+    .cards{ flex-direction:column; }
   }
   .card .icon{ font-size: 18px; }
   .card-head{ display:flex; align-items:center; gap:8px; }
@@ -177,7 +196,7 @@
 <!-- 侧边栏：页面跳转 -->
 <nav class="side-nav" id="sideNav">
   <a class="nav-btn nav-link active" href="index.html" title="主页">🏠</a>
-  <a class="nav-btn nav-link" href="page2.html" title="随笔空间">🌸</a>
+  <a class="nav-btn nav-link" href="page2.html" title="空间">🌸</a>
   <button class="nav-btn nav-toggle" id="navToggle" title="收起导航">⌃</button>
 </nav>
 
@@ -192,6 +211,7 @@
     <img class="avatar" src="avatar.jpg" alt="周的头像">
     <h1>周裔</h1>
     <p class="intro">一个平平无奇想要摆烂的大学生</p>
+    <p class="hero-email">📮 <a href="mailto:1248536271@qq.com">1248536271@qq.com</a></p>
     <a class="hero-cta" href="#chat">💬 和我的数字分身聊聊</a>
   </header>
 
@@ -203,13 +223,17 @@
         <div class="card-head"><span class="icon">🌱</span><h3>最近在做</h3></div>
         <p>搭这个个人主页，同时把这学期的课程内容整理成自己的笔记。</p>
       </div>
+      <a class="card" href="page2.html#zhaopian" aria-label="进入照片空间">
+        <div class="card-head"><span class="icon">📷</span><h3>拍照</h3></div>
+        <p>把眼前的画面定格下来，让平凡的日子也留下值得回看的瞬间。</p>
+      </a>
+      <a class="card" href="page2.html#suibi" aria-label="进入随笔空间">
+        <div class="card-head"><span class="icon">✍️</span><h3>写作</h3></div>
+        <p>把学到的东西写成大白话，把绕来绕去的概念讲清楚。</p>
+      </a>
       <div class="card">
-        <div class="card-head"><span class="icon">🎨</span><h3>兴趣</h3></div>
-        <p>画画和写作——一个用来观察世界，一个用来理清自己。</p>
-      </div>
-      <div class="card">
-        <div class="card-head"><span class="icon">💡</span><h3>我的特点</h3></div>
-        <p>不迎合、不讨好，做最真实的自己。</p>
+        <div class="card-head"><span class="icon">🌿</span><h3>我的特点</h3></div>
+        <p>喜欢对已知的事情作出计划，再按计划一步步执行，稳稳地往前走。</p>
       </div>
     </div>
   </section>
@@ -280,14 +304,14 @@
       return "说实话，有些内容第一遍看会懵 😵 我的办法是先过一遍，再试着用大白话讲给自己听：能讲明白的就是真懂了，讲不明白的就知道该回头补哪里 💪";
     if (/ai|人工智能/.test(t))
       return "AI 对我来说既是学习对象，也是学习工具 🤖 比如这个数字分身，就是我一边学一边搭出来的小实验 ✨";
-    if (/画画|画/.test(t))
-      return "画画是我给自己充电的方式 🎨 有时候也会把课程笔记画成小图，看起来轻松多了～";
+    if (/拍照|摄影|照片/.test(t))
+      return "拍照是我给自己充电的方式 📷 出门走走随手拍几张，回头翻相册的时候，很多小事都变得有意思了～";
     if (/写作|写东西|文章/.test(t))
       return "我喜欢把学到的内容写出来 ✍️ ";
     if (/你好|嗨|hi|hello/.test(t))
       return "嗨～我是周裔的数字分身 🌿 有什么想问的吗？";
     /* 兜底：问题不在回答范围内时的通用回答 */
-    return "唔……这个问题好像超出我的回答范围了 我只了解「周裔」的近况、在整理的资料、学习难度，还有画画写作这些事～你可以点下面的快捷问题，或者换个方式问问看 🌿";
+    return "唔……这个问题好像超出我的回答范围了 我只了解「周裔」的近况、在整理的资料、学习难度，还有拍照写作这些事～你可以点下面的快捷问题，或者换个方式问问看 🌿";
   }
 
   function send(text){

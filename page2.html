@@ -15,6 +15,7 @@
     --line: #ebf2f0;
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
   body{
     font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
     background: var(--bg);
@@ -80,6 +81,13 @@
   .hero{ text-align:center; padding: 16px 0 36px; }
   .hero h1{ font-size: 24px; letter-spacing: 2px; }
   .hero p{ margin-top: 6px; color: var(--muted); font-size: 14px; }
+  .essay-title{
+    font-size:17px; color:var(--ink);
+    display:flex; align-items:center; gap:8px;
+    margin-bottom:2px; scroll-margin-top: 16px;
+  }
+  .essay-title.section-gap{ margin-top: 26px; }
+  .essay-title .dot{ width:8px; height:8px; border-radius:50%; background:var(--teal); }
   .essay-list{ display:flex; flex-direction:column; gap:12px; }
   .essay-card{
     background: var(--card); border: 1px solid var(--line);
@@ -87,6 +95,25 @@
     font-size: 14px; color: var(--ink);
   }
   .essay-date{ font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+
+  /* ===== 照片墙 ===== */
+  .photo-grid{
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;
+  }
+  .photo-grid:not(:empty){ margin-top: 12px; }
+  .photo-grid img{
+    width:100%; aspect-ratio:1/1; object-fit:cover;
+    border-radius:10px; border:1px solid var(--line);
+    display:block; cursor:pointer;
+    transition: transform .15s, box-shadow .15s;
+  }
+  .photo-grid img:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(15,155,142,.15);
+  }
+  @media (max-width: 599px){
+    .photo-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
   footer{
     margin-top: 40px;
     display:flex; align-items:center; gap:12px;
@@ -102,7 +129,7 @@
 <!-- 侧边栏：页面跳转 -->
 <nav class="side-nav" id="sideNav">
   <a class="nav-btn nav-link" href="index.html" title="回到主页">🏠</a>
-  <a class="nav-btn nav-link active" href="page2.html" title="本页 · 随笔空间">🌸</a>
+  <a class="nav-btn nav-link active" href="page2.html" title="空间">🌸</a>
   <button class="nav-btn nav-toggle" id="navToggle" title="收起导航">⌃</button>
 </nav>
 
@@ -113,7 +140,7 @@
 
 <main>
   <header class="hero">
-    <h1>周裔的随笔空间</h1>
+    <h1>空间</h1>
   </header>
 
   <div class="essay-layout">
@@ -122,24 +149,24 @@
       <div class="profile-name">周裔</div>
       <div class="profile-info">
         <div>性别：女</div>
-        <div>电话：15821134165</div>
         <div>邮箱：<a href="mailto:1248536271@qq.com">1248536271@qq.com</a></div>
         <div class="tip-tags">
-          <span class="tag">🎨 画画</span>
+          <span class="tag">📷 拍照</span>
           <span class="tag">✍️ 写作</span>
-          <span class="tag">🌿 有话直说</span>
+          <span class="tag">🌿 做计划</span>
         </div>
       </div>
     </aside>
 
     <div class="essay-list">
+    <h2 class="essay-title" id="suibi"><span class="dot"></span>随笔</h2>
     <div class="essay-card">
       <div class="essay-date">2026-05-22</div>
       这阵子一直在搭自己的小主页，顺便把课程笔记一条条理顺。原以为整理是重复劳动，后来才发现，能把旧知识讲清楚，才算真的装进了口袋。
     </div>
     <div class="essay-card">
       <div class="essay-date">2026-06-15</div>
-      画画于我像一个暂停键。画到一半常常忘了时间，回过头再看笔记，那些绕来绕去的概念，忽然就有了轮廓和颜色。
+      拍照于我像一个暂停键。按下快门的那一刻，眼前的事物被定格下来，很多当时没注意的细节，回头翻看时才慢慢品出味道。
     </div>
     <div class="essay-card">
       <div class="essay-date">2026-08-09</div>
@@ -148,6 +175,12 @@
     <div class="essay-card">
       <div class="essay-date">2026-09-10</div>
       学 AI 的日子，我总提醒自己别装懂。不懂就承认，再一点点啃明白——说实话虽然慢一点，但心里干净，睡得也香。
+    </div>
+    <h2 class="essay-title section-gap" id="zhaopian"><span class="dot"></span>照片</h2>
+    <div class="photo-grid">
+      <img src="photo1.jpg" alt="晚霞">
+      <img src="photo2.jpg" alt="晚霞">
+      <img src="photo3.jpg" alt="晚霞">
     </div>
     </div>
   </div>
