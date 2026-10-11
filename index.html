@@ -300,7 +300,7 @@
   /* 调用云函数 api/chat，由后端转发给 DeepSeek（Key 保存在后端，不出现在网页里） */
   async function askAI(content){
     history.push({ role: 'user', content: content });
-    const resp = await fetch('https://web-1-d2g6u403f75ec18.service.tcloudbase.com/chat', {
+    const resp = await fetch('https://web-1-d2g6x46ki03f75ec1-1504089195.ap-shanghai.app.tcloudbase.com/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: history })
