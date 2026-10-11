@@ -294,13 +294,13 @@
     }, 650);
   }
 
-  /* 对话历史：随每次请求发给后端，让分身记住多轮上下文 */
+   /* 对话历史：随每次请求发给后端，让分身记住多轮上下文 */
   const history = [];
 
   /* 调用云函数 api/chat，由后端转发给 DeepSeek（Key 保存在后端，不出现在网页里） */
   async function askAI(content){
     history.push({ role: 'user', content: content });
-    const resp = await fetch('api/chat', {
+    const resp = await fetch('https://web-1-d2g6u403f75ec18.service.tcloudbase.com/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: history })
