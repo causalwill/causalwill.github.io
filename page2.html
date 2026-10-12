@@ -49,6 +49,19 @@
   .nav-toggle:hover{ background: var(--teal-light); }
   .side-nav.collapsed .nav-link{ display:none; }
 
+  /* ===== 点击效果：点击处冒出一枚 🌿，渐渐消失 ===== */
+  .click-sprout{
+    position: fixed;
+    pointer-events: none;
+    z-index: 200;
+    font-size: 18px;
+    animation: sproutFade .8s ease-out forwards;
+  }
+  @keyframes sproutFade{
+    from{ opacity: 1; transform: translate(-50%,-50%) scale(.6); }
+    to{ opacity: 0; transform: translate(-50%,-90%) scale(1.4); }
+  }
+
   /* ===== 左侧资料卡 ===== */
   .essay-layout{ display:flex; gap:20px; align-items:flex-start; }
   .profile-card{
@@ -67,10 +80,27 @@
   }
   .profile-info a{ color:var(--muted); text-decoration:none; }
   .profile-info > div{ word-break:break-all; }
-  .tip-tags{ display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-top:2px; }
-  .tag{
-    font-size:11px; color:var(--muted); background:#e4f4f1;
-    border-radius:999px; padding:3px 9px; white-space:nowrap;
+  /* ===== 词条弹幕：邮箱下方词条单行循环飘过 ===== */
+  .danmaku{
+    align-self:stretch; margin-top:8px;
+    background:var(--bg); border:1px solid var(--line);
+    border-radius:10px; padding:6px 0;
+    overflow:hidden;
+  }
+  .danmaku-inner{
+    display:flex; width:max-content;
+    animation: danmakuScroll 14s linear infinite;
+  }
+  .danmaku:hover .danmaku-inner{ animation-play-state:paused; }
+  .danmaku-inner span{
+    margin-right:22px; white-space:nowrap;
+    font-size:11px; color:var(--teal);
+    background:var(--teal-light);
+    border-radius:999px; padding:2px 9px;
+  }
+  @keyframes danmakuScroll{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
   }
   @media (max-width: 599px){
     .essay-layout{ flex-direction:column; }
@@ -107,12 +137,100 @@
     display:block; cursor:pointer;
     transition: transform .15s, box-shadow .15s;
   }
-  .photo-grid img:hover{
+  .photo-grid:not(.stacked) img:hover{
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(15,155,142,.15);
   }
   @media (max-width: 599px){
     .photo-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* ===== 照片扇形堆叠：初始收成扇形，点击扇形展开全部 ===== */
+  .photo-grid.stacked{
+    display:block; position:relative; cursor:pointer;
+    width: calc((100% - 20px)/3);
+    aspect-ratio:1/1;
+    margin-inline:auto;
+    transition: transform .15s;
+  }
+  .photo-grid.stacked:hover{ transform: translateY(-2px); }
+  .photo-grid.stacked img{
+    position:absolute; top:0; left:0;
+    width:100%; height:100%; object-fit:cover;
+    box-shadow:0 4px 14px rgba(36,57,58,.14);
+    transform-origin:50% 130%; /* 支点在照片下方，绕它转出扇形 */
+  }
+  .photo-grid.stacked img:nth-child(1){ z-index:3; transform:rotate(0deg); }
+  .photo-grid.stacked img:nth-child(2){ z-index:2; transform:rotate(-14deg); }
+  .photo-grid.stacked img:nth-child(3){ z-index:1; transform:rotate(14deg); }
+  .photo-grid.stacked::after{
+    content:"点击展开全部照片";
+    position:absolute; left:50%; bottom:-28px; transform:translateX(-50%);
+    font-size:11px; color:var(--teal-dark); white-space:nowrap;
+    background:#fff; border:1px solid #cfe5e1;
+    padding:3px 10px; border-radius:999px; pointer-events:none;
+  }
+
+  /* 收起照片按钮：展开后才出现 */
+  .photo-collapse-bar{ text-align:center; margin-top:14px; }
+  .photo-collapse{
+    border:1px solid #cfe5e1; background:#fff; color:var(--teal-dark);
+    border-radius:999px; padding:5px 16px; font-size:12.5px;
+    cursor:pointer; font-family:inherit;
+    transition: background .15s;
+  }
+  .photo-collapse:hover{ background:var(--teal-light); }
+  .photo-collapse[hidden]{ display:none; }
+  @media (max-width: 599px){
+    .photo-grid.stacked{ width: calc((100% - 10px)/2); }
+  }
+
+  /* 展开瞬间：照片依次弹入 */
+  .photo-grid:not(.stacked) img{
+    animation: photoPop .35s ease backwards;
+  }
+  .photo-grid:not(.stacked) img:nth-child(2){ animation-delay:.06s; }
+  .photo-grid:not(.stacked) img:nth-child(3){ animation-delay:.12s; }
+  @keyframes photoPop{
+    from{ opacity:0; transform:scale(.92) translateY(8px); }
+    to{ opacity:1; transform:none; }
+  }
+
+  /* ===== 照片灯箱：点击照片后全屏展开，可切换浏览全部 ===== */
+  .lightbox{
+    position:fixed; inset:0; z-index:100;
+    background:rgba(36,57,58,.88);
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+  }
+  .lightbox[hidden]{ display:none; }
+  .lb-img{
+    max-width:100%; max-height:100%;
+    border-radius:12px; border:3px solid #fff;
+    box-shadow:0 8px 30px rgba(0,0,0,.30);
+    object-fit:contain;
+  }
+  .lb-count{
+    position:absolute; bottom:18px; left:50%; transform:translateX(-50%);
+    font-size:13px; color:#fff; letter-spacing:2px;
+    background:rgba(255,255,255,.14); border-radius:999px; padding:4px 14px;
+  }
+  .lb-btn{
+    position:absolute; border:none; cursor:pointer;
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,.90); color:var(--ink);
+    font-size:20px; line-height:1; font-family:inherit;
+    display:flex; align-items:center; justify-content:center;
+    transition: background .15s, transform .15s;
+  }
+  .lb-btn:hover{ background:#fff; transform:scale(1.06); }
+  .lb-close{ top:16px; right:16px; }
+  .lb-prev{ left:12px; top:50%; margin-top:-20px; }
+  .lb-next{ right:12px; top:50%; margin-top:-20px; }
+  @media (max-width: 599px){
+    .lb-btn{ width:34px; height:34px; font-size:17px; }
+    .lb-prev{ left:8px; margin-top:-17px; }
+    .lb-next{ right:8px; margin-top:-17px; }
   }
 
   /* ===== 九宫格拼图（可打乱还原） ===== */
@@ -184,10 +302,15 @@
       <div class="profile-info">
         <div>性别：女</div>
         <div>邮箱：<a href="mailto:1248536271@qq.com">1248536271@qq.com</a></div>
-        <div class="tip-tags">
-          <span class="tag">📷 拍照</span>
-          <span class="tag">✍️ 写作</span>
-          <span class="tag">🌿 做计划</span>
+        <!-- 词条弹幕：单行词条循环飘过 -->
+        <div class="danmaku" aria-hidden="true">
+          <div class="danmaku-inner">
+            <span>📷 拍照</span>
+            <span>✍️ 写作</span>
+            <span>🌿 做计划</span>
+            <span>💤 摆烂</span>
+            <span>🎮 游戏</span>
+          </div>
         </div>
       </div>
     </aside>
@@ -215,6 +338,11 @@
       <img src="photo1.jpg" alt="晚霞">
       <img src="photo2.jpg" alt="晚霞">
       <img src="photo3.jpg" alt="晚霞">
+      <img src="photo4.jpg" alt="风景">
+      <img src="photo5.jpg" alt="风景">
+    </div>
+    <div class="photo-collapse-bar">
+      <button class="photo-collapse" id="photoCollapse" type="button" hidden>⌃ 收起照片</button>
     </div>
     <h2 class="essay-title section-gap" id="game"><span class="dot"></span>游戏</h2>
     <div class="puzzle" id="puzzle"></div>
@@ -230,6 +358,15 @@
   <footer>End</footer>
 </main>
 
+<!-- 照片灯箱：点击照片后展开 -->
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-btn lb-close" type="button" aria-label="关闭">×</button>
+  <button class="lb-btn lb-prev" type="button" aria-label="上一张">‹</button>
+  <img class="lb-img" alt="">
+  <button class="lb-btn lb-next" type="button" aria-label="下一张">›</button>
+  <span class="lb-count"></span>
+</div>
+
 <script>
   /* 侧边栏收起 / 唤出 */
   const sideNav = document.getElementById('sideNav');
@@ -238,6 +375,22 @@
     const collapsed = sideNav.classList.toggle('collapsed');
     navToggle.textContent = collapsed ? '⌄' : '⌃';
     navToggle.title = collapsed ? '展开导航' : '收起导航';
+  });
+
+  /* 点击效果：在点击处冒出一枚 🌿，向上飘散并淡出 */
+  document.addEventListener('click', e => {
+    const sprout = document.createElement('span');
+    sprout.className = 'click-sprout';
+    sprout.textContent = '🌿';
+    sprout.style.left = e.clientX + 'px';
+    sprout.style.top = e.clientY + 'px';
+    document.body.appendChild(sprout);
+    setTimeout(() => sprout.remove(), 800);
+  });
+
+  /* 词条弹幕：每行内容复制一份，实现无缝循环 */
+  document.querySelectorAll('.danmaku-inner').forEach(el => {
+    el.innerHTML += el.innerHTML;
   });
 
   /* ===== 九宫格拼图 ===== */
@@ -304,6 +457,70 @@
   });
 
   render();
+
+  /* ===== 照片灯箱：点击任意照片全屏展开，可左右切换浏览全部 ===== */
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = lightbox.querySelector('.lb-img');
+  const lbCount = lightbox.querySelector('.lb-count');
+  const photos = Array.from(document.querySelectorAll('.photo-grid img'));
+  let lbIndex = 0;
+
+  function showPhoto(i){
+    /* 取模实现首尾循环：最后一张的下一张回到第一张 */
+    lbIndex = (i + photos.length) % photos.length;
+    lbImg.src = photos[lbIndex].src;
+    lbImg.alt = photos[lbIndex].alt;
+    lbCount.textContent = (lbIndex + 1) + ' / ' + photos.length;
+  }
+
+  function openLightbox(i){
+    showPhoto(i);
+    lightbox.hidden = false;
+    document.body.style.overflow = 'hidden'; /* 展开时锁定背景滚动 */
+  }
+
+  function closeLightbox(){
+    lightbox.hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  /* 照片扇形堆叠：初始收成扇形，点击扇形展开；展开后可点「收起照片」变回扇形 */
+  const photoGrid = document.querySelector('.photo-grid');
+  const collapseBtn = document.getElementById('photoCollapse');
+  photoGrid.classList.add('stacked');
+  function expandGrid(){
+    photoGrid.classList.remove('stacked');
+    collapseBtn.hidden = false; /* 展开后显示收起按钮 */
+  }
+  collapseBtn.addEventListener('click', () => {
+    photoGrid.classList.add('stacked');
+    collapseBtn.hidden = true;
+  });
+  photos.forEach((img, i) => img.addEventListener('click', () => {
+    if (photoGrid.classList.contains('stacked')){ expandGrid(); return; }
+    openLightbox(i);
+  }));
+  /* 点到扇形区域边缘（缝隙、提示条）也能展开 */
+  photoGrid.addEventListener('click', () => {
+    if (photoGrid.classList.contains('stacked')) expandGrid();
+  });
+  lightbox.querySelector('.lb-prev').addEventListener('click', () => showPhoto(lbIndex - 1));
+  lightbox.querySelector('.lb-next').addEventListener('click', () => showPhoto(lbIndex + 1));
+  lightbox.querySelector('.lb-close').addEventListener('click', closeLightbox);
+
+  /* 点背景关闭，点图片和按钮不关闭 */
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  lbImg.addEventListener('click', e => e.stopPropagation());
+
+  /* 键盘支持：Esc 关闭，左右方向键切换 */
+  document.addEventListener('keydown', e => {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showPhoto(lbIndex - 1);
+    if (e.key === 'ArrowRight') showPhoto(lbIndex + 1);
+  });
 </script>
 </body>
 </html>

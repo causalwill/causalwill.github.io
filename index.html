@@ -45,14 +45,6 @@
   .hero-email{ margin-top: 4px; font-size: 13.5px; color: var(--muted); }
   .hero-email a{ color: var(--teal-dark); text-decoration: none; }
   .hero-email a:hover{ text-decoration: underline; }
-  .hero-cta{
-    display:inline-block; margin-top: 22px;
-    background: var(--teal); color:#fff; text-decoration:none;
-    font-size: 14px; padding: 10px 26px; border-radius: 999px;
-    box-shadow: 0 3px 12px rgba(15,155,142,.25);
-    transition: background .15s, transform .15s;
-  }
-  .hero-cta:hover{ background: var(--teal-dark); transform: translateY(-1px); }
 
   /* ===== 信息展示区 ===== */
   section h2{
@@ -185,6 +177,31 @@
   .nav-toggle:hover{ background: var(--teal-light); }
   .side-nav.collapsed .nav-link{ display:none; }
 
+  /* ===== 右下角悬浮按钮：点击跳到聊天区 ===== */
+  .chat-fab{
+    position: fixed; right: 20px; bottom: 20px; z-index: 60;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--teal); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; text-decoration: none;
+    box-shadow: 0 4px 14px rgba(15,155,142,.35);
+    transition: background .15s, transform .15s;
+  }
+  .chat-fab:hover{ background: var(--teal-dark); transform: translateY(-2px); }
+
+  /* ===== 点击效果：点击处冒出一枚 🌿，渐渐消失 ===== */
+  .click-sprout{
+    position: fixed;
+    pointer-events: none;
+    z-index: 200;
+    font-size: 18px;
+    animation: sproutFade .8s ease-out forwards;
+  }
+  @keyframes sproutFade{
+    from{ opacity: 1; transform: translate(-50%,-50%) scale(.6); }
+    to{ opacity: 0; transform: translate(-50%,-90%) scale(1.4); }
+  }
+
   /* ===== 手机适配 ===== */
   @media (min-width: 600px){
     .messages{ height: 340px; }
@@ -200,6 +217,9 @@
   <button class="nav-btn nav-toggle" id="navToggle" title="收起导航">⌃</button>
 </nav>
 
+<!-- 右下角悬浮按钮：跳转到数字分身聊天区 -->
+<a class="chat-fab" href="#chat" title="和我的数字分身聊聊" aria-label="和我的数字分身聊聊">💬</a>
+
 <!-- 顶部自然曲线装饰 -->
 <svg class="top-wave" viewBox="0 0 720 80" preserveAspectRatio="none" aria-hidden="true">
   <path d="M0,0 H720 V26 C580,68 440,18 320,40 C190,64 100,24 0,52 Z" fill="#eef6f4"/>
@@ -212,7 +232,6 @@
     <h1>周裔</h1>
     <p class="intro">一个平平无奇想要摆烂的大学生</p>
     <p class="hero-email">📮 <a href="mailto:1248536271@qq.com">1248536271@qq.com</a></p>
-    <a class="hero-cta" href="#chat">💬 和我的数字分身聊聊</a>
   </header>
 
   <!-- 个人信息展示区 -->
@@ -299,11 +318,16 @@
 
   /* 调用云函数 api/chat，由后端转发给 DeepSeek（Key 保存在后端，不出现在网页里） */
   async function askAI(content){
-    history.push({ role: 'user', content: content });
+     history.push({ role: 'user', content: content });
+    
+    // 【新增】只保留最近 10 条对话（5 轮），防止 Token 爆炸
+    const MAX_HISTORY = 10;
+    const recentHistory = history.slice(-MAX_HISTORY);
+    
     const resp = await fetch('https://web-1-d2g6x46ki03f75ec1-1504089195.ap-shanghai.app.tcloudbase.com/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history })
+      body: JSON.stringify({ messages: recentHistory }) // 发送截取后的记录
     });
     if (!resp.ok) throw new Error('接口异常');
     const data = await resp.json();
@@ -355,6 +379,17 @@
     const collapsed = sideNav.classList.toggle('collapsed');
     navToggle.textContent = collapsed ? '⌄' : '⌃';
     navToggle.title = collapsed ? '展开导航' : '收起导航';
+  });
+
+  /* 点击效果：在点击处冒出一枚 🌿，向上飘散并淡出 */
+  document.addEventListener('click', e => {
+    const sprout = document.createElement('span');
+    sprout.className = 'click-sprout';
+    sprout.textContent = '🌿';
+    sprout.style.left = e.clientX + 'px';
+    sprout.style.top = e.clientY + 'px';
+    document.body.appendChild(sprout);
+    setTimeout(() => sprout.remove(), 800);
   });
 
   /* 欢迎语 */
