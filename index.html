@@ -333,6 +333,7 @@
         if (i >= answer.length) clearInterval(timer);
       }, 24);
     } catch (err) {
+      console.error('请求AI失败:', err); // 加这行
       tip.className = 'msg ai';
       tip.textContent = '分身暂时开小差了，稍后再试试吧 🌿';
     }
